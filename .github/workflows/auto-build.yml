@@ -1,0 +1,43 @@
+name: CI / Automated testing
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  DEPENDENCIES_CACHE: swift-cache
+  NX_CACHE: nx-cache
+
+jobs:
+  install-deps:
+    runs-on: macos-12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install deps
+        uses: ./.github/workflows/composite/swift
+        with:
+          cache: ${{ env.DEPENDENCIES_CACHE }}
+
+  verify:
+    runs-on: macos-12
+    needs: install-deps
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install deps
+        uses: ./.github/workflows/composite/swift
+        with:
+          cache: ${{ env.DEPENDENCIES_CACHE }}
+
+      - name: Lint
+        run: swiftlint --config .swiftlint.yml --reporter github-actions-logging
