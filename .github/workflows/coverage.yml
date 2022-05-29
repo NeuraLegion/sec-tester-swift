@@ -10,6 +10,10 @@ on:
     branches:
       - master
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   DEPENDENCIES_CACHE: swift-cache
   NX_CACHE: nx-cache
@@ -23,18 +27,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install deps
+      - name: Resolve deps and build
         uses: ./.github/workflows/composite/swift
         with:
           cache: ${{ env.DEPENDENCIES_CACHE }}
 
-      - name: Swift test
-        run: swift test --enable-code-coverage
+      - name: Run unit test
+        run: make coverage
 
       - name: Send reports to Codeclimate
-        if: ${{ hashFiles('.build/debug/codecov/*.json') }}
+        if: ${{ hashFiles('coverage.lcov') }}
         uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: fe4577b633e287a9e1f85fcb8b722df09fff8ba9638dcb30440e2e5f7d0c3834
         with:
-          coverageLocations: .build/debug/codecov/*.json:lcov
+          coverageLocations: coverage.lcov:lcov

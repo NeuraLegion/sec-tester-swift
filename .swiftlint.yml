@@ -1,5 +1,4 @@
 excluded:
-  - Tests
   - .build
 
 analyzer_rules:

@@ -1,0 +1,13 @@
+# Build options
+--swiftversion 5.0
+
+# Rules
+--disable wrapMultilineStatementBraces
+--disable initCoderUnavailable
+--disable wrapSwitchCases
+--disable unusedArguments
+--wrapconditions after-first
+--funcattributes prev-line
+--guardelse same-line
+--commas inline
+--indent 2

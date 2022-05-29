@@ -7,12 +7,16 @@ on:
     branches:
       - '**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   DEPENDENCIES_CACHE: swift-cache
   NX_CACHE: nx-cache
 
 jobs:
-  install-deps:
+  build-and-verify:
     runs-on: macos-12
     steps:
       - name: Checkout
@@ -20,24 +24,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install deps
+      - name: Resolve deps and build
         uses: ./.github/workflows/composite/swift
         with:
           cache: ${{ env.DEPENDENCIES_CACHE }}
 
-  verify:
-    runs-on: macos-12
-    needs: install-deps
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Lint code
+        run: make lint
 
-      - name: Install deps
-        uses: ./.github/workflows/composite/swift
-        with:
-          cache: ${{ env.DEPENDENCIES_CACHE }}
-
-      - name: Lint
-        run: swiftlint --config .swiftlint.yml --reporter github-actions-logging
+      - name: Formatting issues
+        run: make format

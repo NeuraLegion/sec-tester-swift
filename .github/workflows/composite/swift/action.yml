@@ -19,10 +19,10 @@ runs:
       uses: actions/cache@v3
       with:
         path: .build
-        key: ${{ inputs.cache }}-${{ hashFiles('**/Package.resolved') }}
+        key: ${{ inputs.cache }}-${{ hashFiles('Package.resolved') }}
         restore-keys: |
           ${{ inputs.cache }}-
 
     - name: Install deps and build
       shell: bash
-      run: swift build --build-tests
+      run: make build

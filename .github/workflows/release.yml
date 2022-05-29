@@ -16,7 +16,7 @@ jobs:
         with:
           token: ${{ secrets.GPR_TOKEN }}
 
-      - name: Install deps
+      - name: Resolve deps and build
         uses: ./.github/workflows/composite/swift
         with:
           cache: ${{ env.DEPENDENCIES_CACHE }}
