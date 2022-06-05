@@ -8,3 +8,7 @@ DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
 .idea
+*.generated.swift
+lib_InternalSwiftSyntaxParser.dylib
+.mockingbird/
+project.json
